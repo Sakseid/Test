@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kontaktnett;
 
 import java.util.ArrayList;
@@ -53,6 +48,7 @@ public class KontaktNett {
     /**
      * Skal registrere en samtale mellom to personer, skal enten øke antall 
      * med 1 eller lage en ny kant.
+     * 
      * @param person1
      * @param person2
      */
@@ -105,6 +101,7 @@ public class KontaktNett {
      * hatt direkte eller indirekte kontakt med, med flere samtaler enn parameteren antall
      * 
      * Går gjennom grafen så lenge samtaler til og fra personer er flere enn parameteren antall
+     * 
      * @param p
      * @param antall
      */
