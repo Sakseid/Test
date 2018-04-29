@@ -36,7 +36,9 @@ public class Samtale {
         this.samtaler = samtaler;
     }
     
-    
+    public void skrivInfo(){
+        System.out.println(fra.getNavn()+" "+til.getNavn()+" "+samtaler);
+    }
     
     
 }

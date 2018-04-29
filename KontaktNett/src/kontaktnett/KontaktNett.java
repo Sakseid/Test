@@ -59,96 +59,78 @@ public class KontaktNett {
     public void registrerSamtale(int person1, int person2){
         Person p1 = personer.get(person1);
         Person p2 = personer.get(person2);
-        Person p3 = p1.getNaboer().get(person2).getTil(); //Her ligger feilen!!!!!!!!
-        
-        for(Samtale s : p1.getNaboer()){
-            if (p3==null){
-                personer.get(person1).getNaboer().add(new Samtale(personer.get(person1), personer.get(person2), 1));
-                System.out.println("Ny kant opprettet");
-            }
-            else if (p2 == p3){
-                s.leggTilSamtale();
-                System.out.println("Samtale oppdatert fra "+ (s.getSamtaler()-1) + " til " + s.getSamtaler());
-            }
-        }
-    }
-    
-    /**
-     * Metoden til Benjamin
-     * @param from
-     * @param to 
-     */
-    private void regConv(String from, String to) {
-        int calls = 1;
-        Node fromNode = nodeMap.get(from);
-        if (fromNode != null) {
-            Node toNode = nodeMap.get(to);
-            if (toNode != null) {
-                Edge fromToEdge = fromNode.getEdge(to);
-                if (fromToEdge != null) {
-                    calls += fromToEdge.getCalls();
+        List<Samtale> n = p1.getNaboer();
+        boolean oppdatert = false;
+        for (Samtale s : n){
+                if (s.getTil().equals(p2)){
+                    s.leggTilSamtale();
+                    System.out.println("Samtale oppdatert fra "+ (s.getSamtaler()-1) + " til " + s.getSamtaler());
+                    oppdatert = true;
                 }
-                fromNode.addEdge(toNode, calls);
-                System.out.println("Updated edge " + from + " to " + to + " to " + calls + " calls.");
-
-            } else {
-                System.out.println(to + " does not exist in this map.");
-            }
-        } else {
-            System.out.println(from + " does not exist in this map.");
         }
+        if (!oppdatert){
+            Samtale samtale = new Samtale(p1, p2, 1);
+            p1.getNaboer().add(samtale);
+            System.out.println("Ny kant opprettet");
+            }
     }
-    
+        
     /**
      * Metode som skal finne direkte kontakter, skal returnere alle personer en 
      * mistenkt har hatt flere enn parameteren antall samtaler med
+     * 
+     * Mulig denne metoden er noe omstendelig, men den virker
+     * 
      * @param p
      * @param antall 
      */
     public void finnDirekteKontakter(Person p, int antall){
+        boolean funnet = false;
         for (Samtale s : p.getNaboer()){
-            if (s.getSamtaler()>=antall)
-                System.out.println(p.getNavn() + " har ringt " + s.getSamtaler() + " ganger til " + s.getTil().getNavn());
+            List<Samtale> l = s.getTil().getNaboer();
+            if (s.getSamtaler()>=antall){
+                for (Samtale f : l){
+                    if (f.getTil().equals(p) && f.getSamtaler()>=antall){
+                        System.out.println(p.getNavn() + " har ringt " + s.getSamtaler() + " ganger til " + s.getTil().getNavn());
+                        funnet = true;
+                    }
+                }
+            }
         }
+        if (!funnet) System.out.println(p.getNavn() + " har ingen direkte kontakter med " + antall + " som grense");
     }
     
     /**
      * Skal returnere en liste med personer en mistenkt har 
      * hatt direkte eller indirekte kontakt med, med flere samtaler enn parameteren antall
+     * 
+     * Går gjennom grafen så lenge samtaler til og fra personer er flere enn parameteren antall
      * @param p
      * @param antall
      */
-    public void badFinnAlleKontakter(Person p, int antall){
+    public void finnAlleKontakter(Person p, int antall){
         ArrayList<Person> sett = new ArrayList<>();
         LinkedList<Person> l = new LinkedList<>();
+        boolean funnet = false;
         l.addLast(p);
         sett.add(p);
         System.out.println(p.getNavn() + " sine kontakter:");
         while (!l.isEmpty()){
             Person person = l.removeFirst();
             for (Samtale s : person.getNaboer()){
-                if (!sett.contains(s.getTil())){
-                    if (s.getSamtaler()>=antall){
-                        System.out.println(s.getTil().getNavn());
+                List<Samtale> k = s.getTil().getNaboer();
+                if (!sett.contains(s.getTil()) && s.getSamtaler()>=antall){
+                    for (Samtale f : k){
+                        if (f.getTil().equals(person) && f.getSamtaler()>=antall){
+                            System.out.println(s.getTil().getNavn());
+                            funnet = true;
+                            l.addLast(s.getTil());
+                            sett.add(s.getTil());
+                        }
                     }
-                    l.addLast(s.getTil());
-                    sett.add(s.getTil());
                 }
             }
         }
+        if (!funnet) System.out.println(p.getNavn() + " har ingen kontakter i nettverket med " + antall + " som grense");
     }
-    
-    
-     
-    /**
-     * 
-     * @param p
-     * @param antall 
-     */
-    public void finnAlleKontakter(Person p, int antall){
-        ArrayList<Person> sett = new ArrayList<>();
-        LinkedList<Person> l = new LinkedList<>();
-    }
-     
-
 }
