@@ -1,2 +1,3 @@
-# Test
-Just a test
+# UiA
+
+Diverse prosjekt tilknyttet UiA
